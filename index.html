@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="sk">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Mind+</title>
+  <style>
+    :root { color-scheme: dark; }
+    * { box-sizing: border-box; }
+    html, body { min-height: 100%; margin: 0; }
+    body {
+      display: grid;
+      place-items: center;
+      padding: 24px;
+      background: #1c2027;
+      font-family: Arial, sans-serif;
+    }
+    .device {
+      position: relative;
+      width: min(100%, 375px);
+      overflow: hidden;
+      background: #142a33;
+      box-shadow: 0 16px 48px rgb(0 0 0 / 45%);
+    }
+    .screen { display: none; position: relative; width: 100%; }
+    .screen.is-active { display: block; }
+    .screen img { display: block; width: 100%; height: auto; user-select: none; }
+    .tap {
+      position: absolute;
+      display: block;
+      border: 0;
+      background: transparent;
+      cursor: pointer;
+      border-radius: 8px;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .tap:focus-visible { outline: 3px solid #7afa57; outline-offset: 2px; }
+    .cta { left: 6%; top: 56%; width: 88%; height: 9%; }
+    .back { left: 2%; top: 1%; width: 13%; height: 3%; border-radius: 50%; }
+    .footer-terms { left: 16%; width: 42%; height: 1.7%; }
+    .footer-help { left: 63%; width: 21%; height: 1.7%; }
+    .footer-privacy { left: 14%; width: 72%; height: 1.7%; }
+    #landing .footer-terms { left: 12%; top: 83.5%; width: 49%; height: 5.5%; }
+    #landing .footer-help { left: 59%; top: 83.5%; width: 28%; height: 5.5%; }
+    #landing .footer-privacy { top: 89%; height: 5%; }
+    #terms .footer-terms, #terms .footer-help { top: 96.3%; }
+    #terms .footer-privacy { top: 98.1%; }
+    #privacy .footer-terms, #privacy .footer-help { top: 95.3%; }
+    #privacy .footer-privacy { top: 97.1%; }
+    #help .footer-terms, #help .footer-help { top: 91.5%; }
+    #help .footer-privacy { top: 94.2%; }
+    #help .back { top: 3.2%; }
+    @media (max-width: 440px) {
+      body { display: block; padding: 0; background: #142a33; }
+      .device { width: 100%; max-width: none; min-height: 100vh; box-shadow: none; }
+    }
+  </style>
+</head>
+<body>
+  <main class="device" aria-label="Mind plus interactive prototype">
+    <section class="screen is-active" id="landing" aria-label="Landing page">
+      <img src="assets/landing.jpg" alt="Mind plus landing page" />
+      <button class="tap cta" data-go="train" aria-label="Predplaťte sa"></button>
+      <button class="tap footer-terms" data-go="terms" aria-label="Podmienky používania"></button>
+      <button class="tap footer-help" data-go="help" aria-label="Pomoc"></button>
+      <button class="tap footer-privacy" data-go="privacy" aria-label="Zásady ochrany osobných údajov"></button>
+    </section>
+
+    <section class="screen" id="train" aria-label="Trénovať">
+      <img src="assets/train.png" alt="Mind plus training home page" />
+    </section>
+
+    <section class="screen" id="terms" aria-label="Terms of use">
+      <img src="assets/terms.png" alt="Podmienky používania" />
+      <button class="tap back" data-go="landing" aria-label="Späť na landing page"></button>
+      <button class="tap footer-terms" data-go="terms" aria-label="Podmienky používania"></button>
+      <button class="tap footer-help" data-go="help" aria-label="Pomoc"></button>
+      <button class="tap footer-privacy" data-go="privacy" aria-label="Zásady ochrany osobných údajov"></button>
+    </section>
+
+    <section class="screen" id="privacy" aria-label="Privacy policy">
+      <img src="assets/privacy.png" alt="Zásady ochrany osobných údajov" />
+      <button class="tap back" data-go="landing" aria-label="Späť na landing page"></button>
+      <button class="tap footer-terms" data-go="terms" aria-label="Podmienky používania"></button>
+      <button class="tap footer-help" data-go="help" aria-label="Pomoc"></button>
+      <button class="tap footer-privacy" data-go="privacy" aria-label="Zásady ochrany osobných údajov"></button>
+    </section>
+
+    <section class="screen" id="help" aria-label="Help">
+      <img src="assets/help.png" alt="Pomoc" />
+      <button class="tap back" data-go="landing" aria-label="Späť na landing page"></button>
+      <button class="tap footer-terms" data-go="terms" aria-label="Podmienky používania"></button>
+      <button class="tap footer-help" data-go="help" aria-label="Pomoc"></button>
+      <button class="tap footer-privacy" data-go="privacy" aria-label="Zásady ochrany osobných údajov"></button>
+    </section>
+  </main>
+  <script>
+    const screens = [...document.querySelectorAll('.screen')];
+    function show(id, addHistory = true) {
+      screens.forEach(screen => screen.classList.toggle('is-active', screen.id === id));
+      if (addHistory) history.pushState({ screen: id }, '', `#${id}`);
+      window.scrollTo({ top: 0, behavior: 'instant' });
+    }
+    document.addEventListener('click', event => {
+      const target = event.target.closest('[data-go]');
+      if (target) show(target.dataset.go);
+    });
+    window.addEventListener('popstate', () => show(location.hash.slice(1) || 'landing', false));
+    const initial = location.hash.slice(1);
+    if (screens.some(screen => screen.id === initial)) show(initial, false);
+  </script>
+</body>
+</html>
